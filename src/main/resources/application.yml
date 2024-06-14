@@ -1,0 +1,62 @@
+server:
+  port: ${PORT:8501}
+info:
+  app:
+    description: "Spring Boot RabbitMQ Demo"
+management:
+  server:
+    port: 8088
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+
+spring:
+  application:
+    name: spring-rabbitmq-demo
+  docker:
+    compose:
+      enabled: true
+      file: compose.yaml
+  rabbitmq:
+    host: ${RABBITMQ_URL:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    virtual-host: ${RABBITMQ_VIRTUALHOST:demo}
+    username: ${RABBITMQ_USER:demo}
+    password: ${RABBITMQ_PASS:secret}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+        concurrency: 5
+        max-concurrency: 10
+        prefetch: 10
+      type: simple
+  cloud:
+    function:
+      definition: processPayment
+    stream:
+      bindings:
+        processPayment-in-0:
+          destination: demo.payment-request
+          group: demo-payment
+        processPayment-out-0:
+          destination: demo.payment-response
+          group: demo-payment
+  threads:
+    virtual:
+      enabled: true
+
+logging:
+  level:
+    com.example: debug
+    org.springframework.batch: debug
+    org.springframework.data: debug
+    org.springframework.web.client.RestTemplate: debug
+    org.springframework.integration: debug
+    org.springframework.security: debug
+    org.springframework.amqp: debug
+    org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer: DEBUG
+    org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor: DEBUG
+    com.rabbitmq: debug

@@ -1,0 +1,117 @@
+{
+    "rabbit_version": "3.12.11",
+    "users": [
+        {
+            "name": "demo",
+            "password_hash": "lhrXVm4S2uEx9n3W543nPjkPfYAoifhGLvc/Dfh/NEMzbKup",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": ""
+        },
+        {
+            "name": "admin",
+            "password_hash": "lhrXVm4S2uEx9n3W543nPjkPfYAoifhGLvc/Dfh/NEMzbKup",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": "administrator"
+        }
+    ],
+    "vhosts": [
+        {
+            "name": "demo"
+        },
+        {
+            "name": "/"
+        }
+    ],
+    "permissions": [
+        {
+            "user": "admin",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "admin",
+            "vhost": "demo",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "demo",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        },
+        {
+            "user": "demo",
+            "vhost": "demo",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "parameters": [],
+    "global_parameters": [
+        {
+            "name": "cluster_name",
+            "value": "rabbit@rabbitmq"
+        }
+    ],
+    "policies": [],
+    "queues": [
+        {
+            "name": "demo.payment-response.demo-customer",
+            "vhost": "demo",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        },
+        {
+            "name": "demo.payment-request.demo-payment",
+            "vhost": "demo",
+            "durable": true,
+            "auto_delete": false,
+            "arguments": {}
+        }
+    ],
+    "exchanges": [
+        {
+            "name": "demo.payment-request",
+            "vhost": "demo",
+            "type": "topic",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        },
+        {
+            "name": "demo.payment-response",
+            "vhost": "demo",
+            "type": "topic",
+            "durable": true,
+            "auto_delete": false,
+            "internal": false,
+            "arguments": {}
+        }
+    ],
+    "bindings": [
+        {
+            "source": "demo.payment-request",
+            "vhost": "demo",
+            "destination": "demo.payment-request.demo-payment",
+            "destination_type": "queue",
+            "routing_key": "#",
+            "arguments": {}
+        },
+        {
+            "source": "demo.payment-response",
+            "vhost": "demo",
+            "destination": "demo.payment-response.demo-customer",
+            "destination_type": "queue",
+            "routing_key": "#",
+            "arguments": {}
+        }
+    ]
+}

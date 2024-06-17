@@ -24,15 +24,6 @@ spring:
     virtual-host: ${RABBITMQ_VIRTUALHOST:demo}
     username: ${RABBITMQ_USER:demo}
     password: ${RABBITMQ_PASS:secret}
-    listener:
-      simple:
-        retry:
-          enabled: true
-          max-attempts: 3
-        concurrency: 5
-        max-concurrency: 10
-        prefetch: 10
-      type: simple
   cloud:
     function:
       definition: processPayment
@@ -44,6 +35,14 @@ spring:
         processPayment-out-0:
           destination: demo.payment-response
           group: demo-payment
+      rabbit:
+        bindings:
+          processPayment-in-0:
+            consumer:
+              prefetch: 10
+              single-active-consumer: false
+              max-concurrency: 10
+              container-type: simple
   threads:
     virtual:
       enabled: true
